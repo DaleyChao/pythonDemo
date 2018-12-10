@@ -5,13 +5,9 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 sys.path.append('/demo/m3u8/')
 import os
-
 from retry import retry
 import requests
-import datetime
 from Crypto.Cipher import AES
-from binascii import b2a_hex, a2b_hex
-
 import threading
 
 threads = {}
@@ -19,8 +15,7 @@ threads = {}
 
 # try_times = threading.local()
 @retry(tries=11, delay=5)
-def download(url, name, a):
-    # print threading.current_thread().getName()
+def download(url, name):
     if not (threading.current_thread().getName() in threads):
         threads[threading.current_thread().getName()] = {}
     threads[threading.current_thread().getName()]["progress"] = "0"
@@ -98,10 +93,10 @@ def download(url, name, a):
 
 
 def print_progress():
-    key = threading.current_thread().getName();
+    key = threading.current_thread().getName()
     sys.stdout.write("第 %d 次下载 *** %s *** 进度： %s --- url: %s" % (
-    threads[key]["times"], threads[key]["name"], threads[key]["progress"], threads[key]["url"]));
-    sys.stdout.write("\n");
+        threads[key]["times"], threads[key]["name"], threads[key]["progress"], threads[key]["url"]))
+    sys.stdout.write("\n")
     # sys.stdout.flush();
 
 
@@ -117,10 +112,8 @@ def merge_file(path, name):
 if __name__ == '__main__':
     # 在这里修改url和文件名 key为url value为文件名
     links = {
-        "key":"value"
+        "key": "value"
     }
     for x, y in links.items():
-        a = True
-        a = 0
-        thread = threading.Thread(target=download, args=(x, y, a))
+        thread = threading.Thread(target=download, args=(x, y))
         thread.start()
