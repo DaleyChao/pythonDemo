@@ -11,6 +11,7 @@ from Crypto.Cipher import AES
 import threading
 
 threads = {}
+mutex = threading.Lock()
 
 
 # try_times = threading.local()
@@ -101,12 +102,14 @@ def print_progress():
 
 
 def merge_file(path, name):
+    mutex.acquire()
     os.chdir(path)
     cmd = "copy /b * new.tmp"
     os.system(cmd)
     os.system('del /Q *.ts')
     os.system('del /Q *.mp4')
     os.rename("new.tmp", name + ".mp4")
+    mutex.release()
 
 
 if __name__ == '__main__':
